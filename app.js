@@ -32,41 +32,9 @@ var port = process.env.PORT || 3000;
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-var apiRouter = express.Router();
+var bookRouter = require('./Routes/bookRoutes');
 
-apiRouter.route('/Books')
-    .post(function(req, res){
-        var book = new Book(req.body);
-
-        console.log('Received a book: ' + book);
-        book.save();
-        res.status(200).send(book);
-    })
-    .get(function(req, res){
-
-        var query = {};
-        if (req.query.genre) {
-            query.genre = req.query.genre;
-        }
-        Book.find(query, function(err, books) {
-            if (err)
-                res.status(500).send(err);
-            else
-                res.json(books);
-        })
-    });
-apiRouter.route('/Books:bookId')
-    .get(function(req, res){
-    
-            Book.findById(req.params.bookId, function(err, book) {
-                if (err)
-                    res.status(500).send(err);
-                else
-                    res.json(book);
-            })
-        });
-
-app.use('/api', apiRouter);
+app.use('/api', bookRouter(Book));
 
 app.get('/', function(req, res){
     res.send('welcome to my API now.');
