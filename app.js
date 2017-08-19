@@ -17,7 +17,11 @@ var option = {
     }
 };
 
-var db = mongoose.connect('mongodb://127.0.0.1:27017/booksapi', option).then(function(){
+var connectionStr = (process.env.ENV == 'Test')
+    ? 'mongodb://127.0.0.1:27017/booksapi_test'
+    : 'mongodb://127.0.0.1:27017/booksapi';
+
+var db = mongoose.connect(connectionStr, option).then(function(){
     //connected successfully
     console.log('Successfully connected to DB.');
 }, function(err) {
@@ -43,3 +47,5 @@ app.get('/', function(req, res){
 app.listen(port, function() {
     console.log('Running on PORT: ' + port);
 });
+
+module.exports = app;
